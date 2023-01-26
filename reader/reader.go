@@ -31,48 +31,29 @@ func LoadBooks(filename string) ([]models.Book, error) {
 		return nil, err
 	}
 
-	// // LOAD AUTHOR RECORDS
-	// authors, err := LoadAuthors("./resources/authors.csv")
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// out := []models.Book{}
-
-	// SLICE TO ITERATE
 	res := []models.Book{}
-
-	// RANGE THROUGH RECORDS SLICE
-	// CREATE A BOOK FOR EVERY ENTRY
 	for _, rec := range records {
 		b := models.Book{
-			Title: rec[0],
-			ISBN:  rec[1],
-			Authors: []models.Author{
-				{
-					Email: rec[2],
-				},
-			},
+			Title:       rec[0],
+			ISBN:        rec[1],
+			Authors:     []string{rec[2]},
 			Description: rec[3],
 		}
 
 		res = append(res, b)
 	}
 
-	// for _, b := range res {
-	// 	for _, bookAuthor := range b.Authors {
-	// 		for _, loadedAuthor := range authors {
-	// 			if bookAuthor.Email == loadedAuthor.Email {
-	// 				bookAuthor.Firstname = loadedAuthor.Firstname
-	// 				bookAuthor.Lastname = loadedAuthor.Lastname
-	// 				out = append(out, b)
-	// 			}
-	// 		}
+	a, err := loadAuthors("./resources/authors.csv")
+	if err != nil {
+		return nil, err
+	}
 
-	// 	}
-	// }
+	out, err := resolveBookAuthors(a, res)
+	if err != nil {
+		return nil, err
+	}
 
-	return res, nil
+	return out, nil
 }
 
 // // LoadMagazines loads magazine data from a file
@@ -96,11 +77,7 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 		return nil, err
 	}
 
-	// SLICE TO ITERATE
 	res := []models.Magazine{}
-
-	// RANGE THROUGH RECORDS SLICE
-	// CREATE A BOOK FOR EVERY ENTRY
 	for _, rec := range records {
 		m := models.Magazine{
 			Title:       rec[0],
@@ -112,17 +89,27 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 		res = append(res, m)
 	}
 
-	return res, nil
+	a, err := loadAuthors("./resources/authors.csv")
+	if err != nil {
+		return nil, err
+	}
+
+	out, err := resolveMagAuthors(a, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return out, nil
 
 }
 
-// ResolveAuthors
-func ResolveAuthors(authors []models.Author, magazines []models.Magazine) []models.Magazine {
+// resolveMagAuthirs maps authors to their emails for magazines
+func resolveMagAuthors(authors []models.Author, magazines []models.Magazine) (mag []models.Magazine, err error) {
 
 	var mappedMagazines []models.Magazine
 	for _, mag := range magazines {
 		for _, a := range mag.Authors {
-			newAuthors := splitString(a)
+			newAuthors := splitString(a, ",")
 			mag.Authors = []string{}
 			for _, mappedAuthor := range newAuthors {
 				for _, auth := range authors {
@@ -139,11 +126,36 @@ func ResolveAuthors(authors []models.Author, magazines []models.Magazine) []mode
 		}
 		mappedMagazines = append(mappedMagazines, mag)
 	}
-	return mappedMagazines
+	return mappedMagazines, nil
+}
+
+// resolveBookAuthors maps authors email to their name
+func resolveBookAuthors(authors []models.Author, magazines []models.Book) (mag []models.Book, err error) {
+	var mappedBooks []models.Book
+	for _, mag := range magazines {
+		for _, a := range mag.Authors {
+			newAuthors := splitString(a, ",")
+			mag.Authors = []string{}
+			for _, mappedAuthor := range newAuthors {
+				for _, auth := range authors {
+					if mappedAuthor == auth.Email {
+						mappedAuthor = " " + auth.Firstname + " " + auth.Lastname + " "
+
+						mag.Authors = append(mag.Authors, mappedAuthor)
+
+					}
+
+				}
+			}
+
+		}
+		mappedBooks = append(mappedBooks, mag)
+	}
+	return mappedBooks, nil
 }
 
 // LoadAuthors reads all authors
-func LoadAuthors(filename string) ([]models.Author, error) {
+func loadAuthors(filename string) ([]models.Author, error) {
 	// reads the authors from file
 	f, err := os.Open(filename)
 	if err != nil {
@@ -178,7 +190,8 @@ func LoadAuthors(filename string) ([]models.Author, error) {
 	return authors, nil
 }
 
-func splitString(line string) []string {
-	res := strings.Split(line, ",")
+// splitStrings separates a line of strings into a slice of strings
+func splitString(line, symbol string) []string {
+	res := strings.Split(line, symbol)
 	return res
 }

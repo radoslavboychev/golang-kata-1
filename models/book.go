@@ -8,11 +8,11 @@ import (
 type Book struct {
 	Title       string
 	ISBN        string
-	Authors     []Author
+	Authors     []string
 	Description string
 }
 
-func NewBook(title, isbn, description string, authors []Author) Book {
+func NewBook(title, isbn, description string, authors []string) Book {
 	return Book{
 		Title:       title,
 		ISBN:        isbn,
@@ -27,9 +27,11 @@ func (b Book) PrintProduct() error {
 		fmt.Printf("Book Found!\n")
 		fmt.Printf("ISBN: %v\n", b.ISBN)
 		fmt.Printf("Title: %v\n", b.Title)
-		for _, v := range b.Authors {
-			fmt.Println("Authors: ", v.Email, " ", v.Firstname, " ", v.Lastname)
+		fmt.Print("Authors: ")
+		for _, auth := range b.Authors {
+			fmt.Print(auth)
 		}
+		fmt.Println()
 		fmt.Printf("Description: %v\n", b.Description)
 		fmt.Println("======")
 	} else {
