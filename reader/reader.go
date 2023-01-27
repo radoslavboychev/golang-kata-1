@@ -43,12 +43,12 @@ func LoadBooks(filename string) ([]models.Book, error) {
 		res = append(res, b)
 	}
 
-	a, err := loadAuthors("./resources/authors.csv")
+	a, err := LoadAuthors("./resources/authors.csv")
 	if err != nil {
 		return nil, err
 	}
 
-	out, err := resolveBookAuthors(a, res)
+	out, err := ResolveBookAuthors(a, res)
 	if err != nil {
 		return nil, err
 	}
@@ -89,12 +89,12 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 		res = append(res, m)
 	}
 
-	a, err := loadAuthors("./resources/authors.csv")
+	a, err := LoadAuthors("./resources/authors.csv")
 	if err != nil {
 		return nil, err
 	}
 
-	out, err := resolveMagAuthors(a, res)
+	out, err := ResolveMagAuthors(a, res)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 }
 
 // resolveMagAuthirs maps authors to their emails for magazines
-func resolveMagAuthors(authors []models.Author, magazines []models.Magazine) (mag []models.Magazine, err error) {
+func ResolveMagAuthors(authors []models.Author, magazines []models.Magazine) (mag []models.Magazine, err error) {
 
 	var mappedMagazines []models.Magazine
 	for _, mag := range magazines {
@@ -130,9 +130,9 @@ func resolveMagAuthors(authors []models.Author, magazines []models.Magazine) (ma
 }
 
 // resolveBookAuthors maps authors email to their name
-func resolveBookAuthors(authors []models.Author, magazines []models.Book) (mag []models.Book, err error) {
+func ResolveBookAuthors(authors []models.Author, books []models.Book) (mag []models.Book, err error) {
 	var mappedBooks []models.Book
-	for _, mag := range magazines {
+	for _, mag := range books {
 		for _, a := range mag.Authors {
 			newAuthors := splitString(a, ",")
 			mag.Authors = []string{}
@@ -155,7 +155,7 @@ func resolveBookAuthors(authors []models.Author, magazines []models.Book) (mag [
 }
 
 // LoadAuthors reads all authors
-func loadAuthors(filename string) ([]models.Author, error) {
+func LoadAuthors(filename string) ([]models.Author, error) {
 	// reads the authors from file
 	f, err := os.Open(filename)
 	if err != nil {

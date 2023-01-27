@@ -27,11 +27,22 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
-
 	p.PrintProduct()
 
 	// search for a product by title
 	_, err = manager.FindByTitle("Das")
+	if err != nil {
+		log.Fatalf("Error: %v", err)
+	}
+
+	// search product by author
+	_, err = manager.FindBookByAuthor("null-walter@echocat.org")
+	if err != nil {
+		log.Fatalf("Error: %v", err)
+	}
+
+	// finding magazine by author
+	_, err = manager.FindMagazineByAuthor("null-walter@echocat.org")
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
