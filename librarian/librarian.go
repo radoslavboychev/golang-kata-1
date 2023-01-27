@@ -6,14 +6,14 @@ import (
 	"os"
 	"strings"
 
-	"github.com/echocat/golang-kata-1/v1/models"
-	"github.com/echocat/golang-kata-1/v1/reader"
+	liberror "github.com/echocat/golang-kata-1/v1/errors"
+	"github.com/echocat/golang-kata-1/v1/pkg/models"
+	"github.com/echocat/golang-kata-1/v1/pkg/reader"
 )
 
 type Librarian struct {
 	Books     []models.Book
 	Magazines []models.Magazine
-	// Authors   []Author
 }
 
 // NewLibrarian constructor creates a new product Librarian
@@ -21,14 +21,12 @@ func NewLibrarian(books []models.Book, magazines []models.Magazine) *Librarian {
 	return &Librarian{
 		Books:     books,
 		Magazines: magazines,
-		// Authors:   authors,
 	}
 }
 
 // PrintBooks prints the info for all books from the librarian
 func (m Librarian) PrintBooks() {
 	for _, bookIn := range m.Books {
-
 		bookIn.PrintProduct()
 	}
 }
@@ -36,10 +34,9 @@ func (m Librarian) PrintBooks() {
 // PrintMagazines prints the info for all the magazines from the librarian
 func (m Librarian) PrintMagazines() error {
 	for _, magIn := range m.Magazines {
-
 		err := magIn.PrintProduct()
 		if err != nil {
-			return err
+			return liberror.ErrFailedToOpenFile
 		}
 	}
 	return nil
@@ -48,6 +45,10 @@ func (m Librarian) PrintMagazines() error {
 // FindByISBN looks up a product by ISBN and returns it
 func (m *Librarian) FindByISBN(isbn string) (models.Product, error) {
 	var p models.Product
+
+	if len(isbn) != 14 {
+		return nil, liberror.ErrFailedToFindProduct
+	}
 
 	for _, mag := range m.Magazines {
 		if mag.ISBN == isbn {
@@ -62,14 +63,21 @@ func (m *Librarian) FindByISBN(isbn string) (models.Product, error) {
 
 	}
 
+	if p == nil {
+		return nil, liberror.ErrFailedToFindProduct
+	}
+
 	return p, nil
 }
 
 // FindByTitle looks up a product by title
 func (m *Librarian) FindByTitle(title string) ([]models.Product, error) {
 
-	var foundItems []models.Product
+	if title == "" {
+		return nil, liberror.ErrFailedToFindProduct
+	}
 
+	var foundItems []models.Product
 	for _, m := range m.Magazines {
 		if strings.Contains(m.Title, title) {
 			foundItems = append(foundItems, m)
@@ -84,6 +92,10 @@ func (m *Librarian) FindByTitle(title string) ([]models.Product, error) {
 
 	for _, v := range foundItems {
 		v.PrintProduct()
+	}
+
+	if foundItems == nil {
+		return nil, liberror.ErrFailedToFindProduct
 	}
 
 	return foundItems, nil
@@ -101,7 +113,11 @@ func (m *Librarian) FindBookByAuthor(email string) ([]models.Book, error) {
 	authors, _ := reader.LoadAuthors("./resources/authors.csv")
 	records, err := loadFile("./resources/books.csv")
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToOpenFile
+	}
+
+	if email == "" {
+		return nil, liberror.ErrInvalidEmail
 	}
 
 	res := []models.Book{}
@@ -128,7 +144,7 @@ func (m *Librarian) FindBookByAuthor(email string) ([]models.Book, error) {
 
 	out, err := reader.ResolveBookAuthors(authors, bookSlice)
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToResolveAuthors
 	}
 
 	for _, v := range out {
@@ -137,13 +153,12 @@ func (m *Librarian) FindBookByAuthor(email string) ([]models.Book, error) {
 	return res, nil
 }
 
+// FindMagazineByAuthor returns all magazines whose author matches the provided author email
 func (m *Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error) {
-	// READ AUTHORS FILE
 	authors, _ := reader.LoadAuthors("./resources/authors.csv")
-	// LOAD RAW FILES FOR BOOKS
 	records, err := loadFile("./resources/magazines.csv")
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToOpenFile
 	}
 
 	res := []models.Magazine{}
@@ -166,11 +181,9 @@ func (m *Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error
 		}
 	}
 
-	// ITERATE THROUGH BOOKS
-	// read magazine from file
 	records, err = loadFile("./resources/magazines.csv")
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToOpenFile
 	}
 
 	mags := []models.Magazine{}
@@ -197,7 +210,7 @@ func (m *Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error
 
 	out, err := reader.ResolveMagAuthors(authors, magSlice)
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToResolveAuthors
 	}
 
 	for _, v := range out {
@@ -218,12 +231,12 @@ func loadFile(filename string) ([][]string, error) {
 	r.Comma = ';'
 
 	if _, err := r.Read(); err != nil {
-		return nil, err
+		return nil, liberror.ErrGeneric
 	}
 
 	records, err := r.ReadAll()
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrGeneric
 	}
 
 	return records, nil

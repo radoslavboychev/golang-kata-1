@@ -6,7 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/echocat/golang-kata-1/v1/models"
+	liberror "github.com/echocat/golang-kata-1/v1/errors"
+	"github.com/echocat/golang-kata-1/v1/pkg/models"
 )
 
 // LoadBooks reads book data from a file
@@ -16,6 +17,7 @@ func LoadBooks(filename string) ([]models.Book, error) {
 	f, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
+		return nil, liberror.ErrFailedToOpenFile
 	}
 	defer f.Close()
 
@@ -23,12 +25,12 @@ func LoadBooks(filename string) ([]models.Book, error) {
 	r.Comma = ';'
 
 	if _, err := r.Read(); err != nil {
-		return nil, err
+		return nil, liberror.ErrGeneric
 	}
 
 	records, err := r.ReadAll()
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrGeneric
 	}
 
 	res := []models.Book{}
@@ -43,14 +45,14 @@ func LoadBooks(filename string) ([]models.Book, error) {
 		res = append(res, b)
 	}
 
-	a, err := LoadAuthors("./resources/authors.csv")
+	a, err := LoadAuthors("../.././resources/authors.csv")
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToOpenFile
 	}
 
 	out, err := ResolveBookAuthors(a, res)
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToResolveAuthors
 	}
 
 	return out, nil
@@ -61,7 +63,7 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 	// read magazine from file
 	f, err := os.Open(filename)
 	if err != nil {
-		log.Fatal(err)
+		return nil, liberror.ErrFailedToOpenFile
 	}
 	defer f.Close()
 
@@ -69,12 +71,12 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 	r.Comma = ';'
 
 	if _, err := r.Read(); err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToOpenFile
 	}
 
 	records, err := r.ReadAll()
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrGeneric
 	}
 
 	res := []models.Magazine{}
@@ -89,14 +91,14 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 		res = append(res, m)
 	}
 
-	a, err := LoadAuthors("./resources/authors.csv")
+	a, err := LoadAuthors("../.././resources/authors.csv")
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToOpenFile
 	}
 
 	out, err := ResolveMagAuthors(a, res)
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToResolveAuthors
 	}
 
 	return out, nil
@@ -159,7 +161,7 @@ func LoadAuthors(filename string) ([]models.Author, error) {
 	// reads the authors from file
 	f, err := os.Open(filename)
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToOpenFile
 	}
 	defer f.Close()
 
@@ -167,12 +169,12 @@ func LoadAuthors(filename string) ([]models.Author, error) {
 	r.Comma = ';'
 
 	if _, err := r.Read(); err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToOpenFile
 	}
 
 	records, err := r.ReadAll()
 	if err != nil {
-		return nil, err
+		return nil, liberror.ErrFailedToOpenFile
 	}
 
 	// maps them to struct

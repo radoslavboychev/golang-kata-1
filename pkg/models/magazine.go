@@ -34,7 +34,7 @@ func (m Magazine) PrintProduct() error {
 		fmt.Printf("Published At: %v\n", m.PublishedAt)
 		fmt.Println("======")
 	} else {
-		return errors.New("Product not found")
+		return errors.New("product not found")
 	}
 	return nil
 }

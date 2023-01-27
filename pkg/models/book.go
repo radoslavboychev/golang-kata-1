@@ -21,7 +21,7 @@ func NewBook(title, isbn, description string, authors []string) Book {
 	}
 }
 
-//
+// PrintProduct outputs a string of product information in the console
 func (b Book) PrintProduct() error {
 	if b.ISBN != "" {
 		fmt.Printf("Book Found!\n")
@@ -35,8 +35,7 @@ func (b Book) PrintProduct() error {
 		fmt.Printf("Description: %v\n", b.Description)
 		fmt.Println("======")
 	} else {
-		fmt.Println("Product not found")
-		return errors.New("Product not found")
+		return errors.New("product not found")
 	}
 	return nil
 }
