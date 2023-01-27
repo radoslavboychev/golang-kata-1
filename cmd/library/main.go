@@ -59,7 +59,8 @@ func main() {
 		log.Fatalf("Error: %v", err)
 	}
 
-	// TODO improve resolving authors
-	// TODO edge cases
+	// // TODO improve resolving authors
+	// TODO fix file loading directories
+	// TODO
 
 }

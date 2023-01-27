@@ -45,7 +45,7 @@ func LoadBooks(filename string) ([]models.Book, error) {
 		res = append(res, b)
 	}
 
-	a, err := LoadAuthors("../.././resources/authors.csv")
+	a, err := LoadAuthors("/mnt/d/projects/go-library/golang-kata-1/resources/authors.csv")
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
 	}
@@ -91,7 +91,7 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 		res = append(res, m)
 	}
 
-	a, err := LoadAuthors("../.././resources/authors.csv")
+	a, err := LoadAuthors("/mnt/d/projects/go-library/golang-kata-1/resources/authors.csv")
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
 	}
@@ -105,7 +105,7 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 
 }
 
-// resolveMagAuthirs maps authors to their emails for magazines
+// ResolveMagAuthors maps authors to their emails for magazines
 func ResolveMagAuthors(authors []models.Author, magazines []models.Magazine) (mag []models.Magazine, err error) {
 
 	var mappedMagazines []models.Magazine

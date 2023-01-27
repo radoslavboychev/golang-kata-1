@@ -6,7 +6,7 @@ import (
 )
 
 type config struct {
-	MagazinesFile string `mastructure:"MAGAZINES_FILE"`
+	MagazinesFile string `mapstructure:"MAGAZINES_FILE"`
 	BooksFile     string `mapstructure:"BOOKS_FILE"`
 	AuthorEmail   string `mapstructure:"AUTHOR_EMAIL"`
 	FindByISBN    string `mapstructure:"ISBN"`

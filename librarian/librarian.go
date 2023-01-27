@@ -110,8 +110,8 @@ func (m Librarian) PrintAll() {
 // FindBookByAuthor looks up a book based on its author
 func (m *Librarian) FindBookByAuthor(email string) ([]models.Book, error) {
 
-	authors, _ := reader.LoadAuthors("./resources/authors.csv")
-	records, err := loadFile("./resources/books.csv")
+	authors, _ := reader.LoadAuthors("/mnt/d/projects/go-library/golang-kata-1/resources/authors.csv")
+	records, err := loadFile("/mnt/d/projects/go-library/golang-kata-1/resources/books.csv")
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
 	}
@@ -155,8 +155,8 @@ func (m *Librarian) FindBookByAuthor(email string) ([]models.Book, error) {
 
 // FindMagazineByAuthor returns all magazines whose author matches the provided author email
 func (m *Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error) {
-	authors, _ := reader.LoadAuthors("./resources/authors.csv")
-	records, err := loadFile("./resources/magazines.csv")
+	authors, _ := reader.LoadAuthors("/mnt/d/projects/go-library/golang-kata-1/resources/authors.csv")
+	records, err := loadFile("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
 	}
@@ -181,7 +181,7 @@ func (m *Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error
 		}
 	}
 
-	records, err = loadFile("./resources/magazines.csv")
+	records, err = loadFile("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
 	}
