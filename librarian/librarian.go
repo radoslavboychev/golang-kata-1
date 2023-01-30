@@ -44,7 +44,7 @@ func (m Librarian) PrintMagazines() error {
 }
 
 // FindByISBN looks up a product by ISBN and returns it
-func (m *Librarian) FindByISBN(isbn string) (models.Product, error) {
+func (m Librarian) FindByISBN(isbn string) (models.Product, error) {
 	var p models.Product
 
 	if len(isbn) != 14 {
@@ -72,7 +72,7 @@ func (m *Librarian) FindByISBN(isbn string) (models.Product, error) {
 }
 
 // FindByTitle looks up a product by title
-func (m *Librarian) FindByTitle(title string) ([]models.Product, error) {
+func (m Librarian) FindByTitle(title string) ([]models.Product, error) {
 
 	if title == "" {
 		return nil, liberror.ErrFailedToFindProduct
@@ -109,7 +109,7 @@ func (m Librarian) PrintAll() {
 }
 
 // FindBookByAuthor looks up a book based on its author
-func (m *Librarian) FindBookByAuthor(email string) ([]models.Book, error) {
+func (m Librarian) FindBookByAuthor(email string) ([]models.Book, error) {
 
 	filepathAuthors := os.Getenv("AUTHORS_FILE")
 	filepathBooks := os.Getenv("BOOKS_FILE")
@@ -159,10 +159,14 @@ func (m *Librarian) FindBookByAuthor(email string) ([]models.Book, error) {
 }
 
 // FindMagazineByAuthor returns all magazines whose author matches the provided author email
-func (m *Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error) {
+func (m Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error) {
 
 	filepathAuthors := os.Getenv("AUTHORS_FILE")
 	filepathMagazines := os.Getenv("MAGAZINES_FILE")
+
+	if email == "" {
+		return nil, liberror.ErrEmailIsNull
+	}
 
 	authors, _ := reader.LoadAuthors(filepathAuthors)
 	records, err := loadFile(filepathMagazines)
@@ -215,6 +219,10 @@ func (m *Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error
 				magSlice = append(magSlice, magazine)
 			}
 		}
+	}
+
+	if len(magSlice) == 0 {
+		return nil, liberror.ErrNoProductsFoundWithAuthor
 	}
 
 	out, err := reader.ResolveMagAuthors(authors, magSlice)

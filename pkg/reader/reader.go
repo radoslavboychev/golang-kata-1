@@ -2,7 +2,6 @@ package reader
 
 import (
 	"encoding/csv"
-	"log"
 	"os"
 	"strings"
 
@@ -15,9 +14,12 @@ func LoadBooks(filename string) ([]models.Book, error) {
 
 	filepath := os.Getenv("AUTHORS_FILE")
 
+	if filename == "" {
+		return nil, liberror.ErrFilenameInvalid
+	}
+
 	f, err := os.Open(filename)
 	if err != nil {
-		log.Fatal(err)
 		return nil, liberror.ErrFailedToOpenFile
 	}
 	defer f.Close()
@@ -32,6 +34,10 @@ func LoadBooks(filename string) ([]models.Book, error) {
 	records, err := r.ReadAll()
 	if err != nil {
 		return nil, liberror.ErrGeneric
+	}
+
+	if len(records) == 0 {
+		return nil, liberror.ErrNoBooksLoaded
 	}
 
 	res := []models.Book{}
@@ -56,6 +62,10 @@ func LoadBooks(filename string) ([]models.Book, error) {
 		return nil, liberror.ErrFailedToResolveAuthors
 	}
 
+	if len(out) == 0 {
+		return nil, liberror.ErrNoBooksLoaded
+	}
+
 	return out, nil
 }
 
@@ -63,6 +73,10 @@ func LoadBooks(filename string) ([]models.Book, error) {
 func LoadMagazines(filename string) ([]models.Magazine, error) {
 
 	filepath := os.Getenv("AUTHORS_FILE")
+
+	if filename == "" {
+		return nil, liberror.ErrFilenameInvalid
+	}
 
 	f, err := os.Open(filename)
 	if err != nil {
@@ -94,6 +108,10 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 		res = append(res, m)
 	}
 
+	if len(records) == 0 {
+		return nil, liberror.ErrNoMagazinesLoaded
+	}
+
 	a, err := LoadAuthors(filepath)
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
@@ -104,12 +122,24 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 		return nil, liberror.ErrFailedToResolveAuthors
 	}
 
-	return out, nil
+	if len(out) == 0 {
+		return nil, liberror.ErrNoMagazinesLoaded
+	}
 
+	return out, nil
 }
 
 // ResolveMagAuthors maps authors to their emails for magazines
 func ResolveMagAuthors(authors []models.Author, magazines []models.Magazine) (mag []models.Magazine, err error) {
+
+	if len(authors) == 0 {
+		return nil, liberror.FailedToResolveAuthorsInvalid
+	}
+
+	if len(magazines) == 0 {
+		return nil, liberror.FailedToResolveMagazinesInvalid
+	}
+
 	var mappedMagazines []models.Magazine
 	for _, mag := range magazines {
 		for _, a := range mag.Authors {
@@ -128,11 +158,25 @@ func ResolveMagAuthors(authors []models.Author, magazines []models.Magazine) (ma
 		}
 		mappedMagazines = append(mappedMagazines, mag)
 	}
+
+	if len(mappedMagazines) == 0 {
+		return nil, liberror.ErrFailedToResolveAuthors
+	}
+
 	return mappedMagazines, nil
 }
 
 // resolveBookAuthors maps authors email to their name
 func ResolveBookAuthors(authors []models.Author, books []models.Book) (mag []models.Book, err error) {
+
+	if len(authors) == 0 {
+		return nil, liberror.FailedToResolveAuthorsInvalid
+	}
+
+	if len(books) == 0 {
+		return nil, liberror.FailedToResolveMagazinesInvalid
+	}
+
 	var mappedBooks []models.Book
 	for _, mag := range books {
 		for _, a := range mag.Authors {
@@ -151,11 +195,20 @@ func ResolveBookAuthors(authors []models.Author, books []models.Book) (mag []mod
 		}
 		mappedBooks = append(mappedBooks, mag)
 	}
+
+	if len(mappedBooks) == 0 {
+		return nil, liberror.ErrFailedToResolveAuthors
+	}
+
 	return mappedBooks, nil
 }
 
-// LoadAuthors reads all authors
+// LoadAuthors reads all authors; Returns slice of all authors
 func LoadAuthors(filename string) ([]models.Author, error) {
+
+	if filename == "" {
+		return nil, liberror.ErrFilenameInvalid
+	}
 
 	f, err := os.Open(filename)
 	if err != nil {
@@ -172,6 +225,10 @@ func LoadAuthors(filename string) ([]models.Author, error) {
 
 	records, err := r.ReadAll()
 	if err != nil {
+		return nil, liberror.ErrFailedToOpenFile
+	}
+
+	if len(records) == 0 {
 		return nil, liberror.ErrFailedToOpenFile
 	}
 

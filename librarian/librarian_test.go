@@ -1,20 +1,32 @@
 package librarian
 
 import (
+	"os"
 	"testing"
 
 	liberror "github.com/echocat/golang-kata-1/v1/errors"
 	"github.com/echocat/golang-kata-1/v1/pkg/models"
 	"github.com/echocat/golang-kata-1/v1/pkg/reader"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
+var err = godotenv.Load(".././config/config.env")
+
+// ENV
+var magazinesFile = os.Getenv("MAGAZINES_FILE")
+var booksFile = os.Getenv("BOOKS_FILE")
+
+// Testing looking up a product by ISBN
 func TestFindByISBN(t *testing.T) {
 
+	// Arrange
+	books, _ := reader.LoadBooks(booksFile)
+	magazines, _ := reader.LoadMagazines(magazinesFile)
+	m := NewLibrarian(books, magazines)
+
+	// Case when the ISBN number is invalid length
 	t.Run("CASE_ISBN_INVALID", func(t *testing.T) {
-		books, _ := reader.LoadBooks("/mnt/d/projects/go-library/golang-kata-1/resources/books.csv")
-		magazines, _ := reader.LoadMagazines("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
-		m := NewLibrarian(books, magazines)
 
 		// Act
 		_, err := m.FindByISBN("4545-8558-3232-22948")
@@ -27,10 +39,8 @@ func TestFindByISBN(t *testing.T) {
 
 	})
 
+	// Case when the ISBN is valid but no results have been found
 	t.Run("CASE_ISBN_VALID_NO_RESULTS", func(t *testing.T) {
-		books, _ := reader.LoadBooks("/mnt/d/projects/go-library/golang-kata-1/resources/books.csv")
-		magazines, _ := reader.LoadMagazines("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
-		m := NewLibrarian(books, magazines)
 
 		// Act
 		m.FindByISBN("1024-1024-1024")
@@ -40,12 +50,9 @@ func TestFindByISBN(t *testing.T) {
 
 	})
 
+	// Case when the ISBN is valid and a product is found
 	t.Run("CASE_ISBN_VALID_RESULT_FOUND", func(t *testing.T) {
-		books, _ := reader.LoadBooks("/mnt/d/projects/go-library/golang-kata-1/resources/books.csv")
-		magazines, _ := reader.LoadMagazines("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
-		m := NewLibrarian(books, magazines)
 
-		// Arrange
 		expectedP := models.Book{
 			Title:       "Schlank im Schlaf ",
 			ISBN:        "4545-8558-3232",
@@ -65,13 +72,16 @@ func TestFindByISBN(t *testing.T) {
 
 }
 
+// Testing looking up a product by title
 func TestFindByTitle(t *testing.T) {
 
-	books, _ := reader.LoadBooks("/mnt/d/projects/go-library/golang-kata-1/resources/books.csv")
-	magazines, _ := reader.LoadMagazines("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
+	// Arrange
+	books, _ := reader.LoadBooks(booksFile)
+	magazines, _ := reader.LoadMagazines(magazinesFile)
 
 	m := NewLibrarian(books, magazines)
 
+	// Case when a product has been found by title
 	t.Run("CASE_SUCCESS_PRODUCT_FOUND", func(t *testing.T) {
 
 		// Act
@@ -86,11 +96,9 @@ func TestFindByTitle(t *testing.T) {
 		assert.Equal(t, expectedResult, res)
 	})
 
+	// Case when no products have been found
 	t.Run("CASE_FAIL_NONE_FOUND", func(t *testing.T) {
 
-		books, _ := reader.LoadBooks("/mnt/d/projects/go-library/golang-kata-1/resources/books.csv")
-		magazines, _ := reader.LoadMagazines("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
-		m := NewLibrarian(books, magazines)
 		// Act
 		_, err := m.FindByTitle("RandomString1234556")
 		if err != nil {
@@ -98,13 +106,12 @@ func TestFindByTitle(t *testing.T) {
 		}
 
 		// Assert
-		assert.EqualError(t, liberror.ErrFailedToFindProduct, "failed to find product")
+		assert.ErrorIs(t, liberror.ErrFailedToFindProduct, err)
 	})
 
+	// Case when the title is null
 	t.Run("CASE_FAIL_TITLE_NULL", func(t *testing.T) {
-		books, _ := reader.LoadBooks("/mnt/d/projects/go-library/golang-kata-1/resources/books.csv")
-		magazines, _ := reader.LoadMagazines("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
-		m := NewLibrarian(books, magazines)
+
 		// Act
 		_, err := m.FindByTitle("")
 		if err != nil {
@@ -117,22 +124,17 @@ func TestFindByTitle(t *testing.T) {
 
 }
 
+// Testing finding a book by its author
 func TestFindBookByAuthor(t *testing.T) {
 
 	// Arrange
-	books, _ := reader.LoadBooks("/mnt/d/projects/go-library/golang-kata-1/resources/books.csv")
-	magazines, _ := reader.LoadMagazines("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
+	books, _ := reader.LoadBooks(booksFile)
+	magazines, _ := reader.LoadMagazines(magazinesFile)
 
 	m := NewLibrarian(books, magazines)
 
+	// Case when a book has been found
 	t.Run("CASE_SUCCESS_FOUND_BOOKS", func(t *testing.T) {
-
-		// Arrange
-		// expectedResult := []models.Book{
-		// 	{
-		// 		ISBN: "2365-8745-7854",
-		// 	},
-		// }
 
 		// Act
 		_, err := m.FindBookByAuthor("null-ferdinand@echocat.org")
@@ -145,10 +147,9 @@ func TestFindBookByAuthor(t *testing.T) {
 
 	})
 
+	// Case when no books have been found
 	t.Run("CASE_FAIL_NO_BOOKS_FOUND", func(t *testing.T) {
-		books, _ := reader.LoadBooks("/mnt/d/projects/go-library/golang-kata-1/resources/books.csv")
-		magazines, _ := reader.LoadMagazines("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
-		m := NewLibrarian(books, magazines)
+
 		// Act
 		_, err := m.FindBookByAuthor("")
 		if err != nil {
@@ -162,6 +163,55 @@ func TestFindBookByAuthor(t *testing.T) {
 
 }
 
+// Testing looking up a magazine by author
 func TestFindMagazineByAuthor(t *testing.T) {
+
+	// Arrange
+	books, _ := reader.LoadBooks(booksFile)
+	magazines, _ := reader.LoadMagazines(magazinesFile)
+	m := NewLibrarian(books, magazines)
+
+	// Case when email is empty
+	t.Run("CASE_FAILS_EMAIL_IS_NIL", func(t *testing.T) {
+
+		// Act
+		_, err := m.FindMagazineByAuthor("")
+		if err != nil {
+			return
+		}
+
+		// Assert
+		assert.Error(t, err, liberror.ErrFailedToPrint)
+		assert.ErrorIs(t, err, liberror.ErrEmailIsNull)
+	})
+
+	// Case when no product is found
+	t.Run("CASE_FAILS_NO_PRODUCT_FOUND", func(t *testing.T) {
+
+		// Act
+		_, err := m.FindMagazineByAuthor("example@gmail.com")
+		if err != nil {
+			return
+		}
+
+		// Assert
+		assert.Error(t, err)
+		assert.ErrorIs(t, liberror.ErrEmailIsNull, err)
+
+	})
+
+	// Case when a product is successfully found
+	t.Run("CASE_SUCCESS_PRODUCT_FOUND", func(t *testing.T) {
+
+		// Act
+		_, err := m.FindMagazineByAuthor("null-mueller@echocat.org")
+		if err != nil {
+			return
+		}
+
+		// Assert
+		assert.NoError(t, err)
+
+	})
 
 }
