@@ -133,11 +133,11 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 func ResolveMagAuthors(authors []models.Author, magazines []models.Magazine) (mag []models.Magazine, err error) {
 
 	if len(authors) == 0 {
-		return nil, liberror.FailedToResolveAuthorsInvalid
+		return nil, liberror.ErrFailedToResolveAuthorsInvalid
 	}
 
 	if len(magazines) == 0 {
-		return nil, liberror.FailedToResolveMagazinesInvalid
+		return nil, liberror.ErrFailedToResolveMagazinesInvalid
 	}
 
 	var mappedMagazines []models.Magazine
@@ -166,15 +166,15 @@ func ResolveMagAuthors(authors []models.Author, magazines []models.Magazine) (ma
 	return mappedMagazines, nil
 }
 
-// resolveBookAuthors maps authors email to their name
+// ResolveBookAuthors maps authors email to their name
 func ResolveBookAuthors(authors []models.Author, books []models.Book) (mag []models.Book, err error) {
 
 	if len(authors) == 0 {
-		return nil, liberror.FailedToResolveAuthorsInvalid
+		return nil, liberror.ErrFailedToResolveAuthorsInvalid
 	}
 
 	if len(books) == 0 {
-		return nil, liberror.FailedToResolveMagazinesInvalid
+		return nil, liberror.ErrFailedToResolveMagazinesInvalid
 	}
 
 	var mappedBooks []models.Book

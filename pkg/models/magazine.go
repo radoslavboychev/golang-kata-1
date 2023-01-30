@@ -1,8 +1,9 @@
 package models
 
 import (
-	"errors"
 	"fmt"
+
+	liberror "github.com/echocat/golang-kata-1/v1/errors"
 )
 
 // Magazine struct
@@ -15,6 +16,18 @@ type Magazine struct {
 
 // NewMagazine constructor for Magazine types
 func NewMagazine(title, isbn, publishedAt string, authors []string) Magazine {
+	if len(isbn) < 14 {
+		isbn = generateISBN()
+	}
+
+	if title == "" {
+		title = "Unnamed Magazine"
+	}
+
+	if len(authors) == 0 {
+		authors = append(authors, "Unknown Author")
+	}
+
 	return Magazine{
 		Title:       title,
 		ISBN:        isbn,
@@ -26,7 +39,7 @@ func NewMagazine(title, isbn, publishedAt string, authors []string) Magazine {
 // PrintProduct method prints data for a magazine in the console
 func (m Magazine) PrintProduct() error {
 	if m.ISBN != "" {
-		fmt.Printf("Magazine Found!\n")
+		fmt.Printf("Magazine:\n")
 		fmt.Printf("ISBN: %v\n", m.ISBN)
 		fmt.Printf("Title: %v\n", m.Title)
 		fmt.Print("Authors: ")
@@ -37,7 +50,7 @@ func (m Magazine) PrintProduct() error {
 		fmt.Printf("Published At: %v\n", m.PublishedAt)
 		fmt.Println("======")
 	} else {
-		return errors.New("product not found")
+		return liberror.ErrFailedToFindProduct
 	}
 	return nil
 }

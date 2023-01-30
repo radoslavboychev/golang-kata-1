@@ -1,8 +1,10 @@
 package models
 
 import (
-	"errors"
 	"fmt"
+	"math/rand"
+
+	liberror "github.com/echocat/golang-kata-1/v1/errors"
 )
 
 // Book
@@ -15,6 +17,18 @@ type Book struct {
 
 // NewBook constructor for books
 func NewBook(title, isbn, description string, authors []string) Book {
+	if len(isbn) < 14 {
+		isbn = generateISBN()
+	}
+
+	if title == "" {
+		title = "Unnamed Book"
+	}
+
+	if len(authors) == 0 {
+		authors = append(authors, "Unknown Author")
+	}
+
 	return Book{
 		Title:       title,
 		ISBN:        isbn,
@@ -26,7 +40,7 @@ func NewBook(title, isbn, description string, authors []string) Book {
 // PrintProduct outputs a string of product information in the console
 func (b Book) PrintProduct() error {
 	if b.ISBN != "" {
-		fmt.Printf("Book Found!\n")
+		fmt.Printf("Book: \n")
 		fmt.Printf("ISBN: %v\n", b.ISBN)
 		fmt.Printf("Title: %v\n", b.Title)
 		fmt.Print("Authors: ")
@@ -37,7 +51,19 @@ func (b Book) PrintProduct() error {
 		fmt.Printf("Description: %v\n", b.Description)
 		fmt.Println("======")
 	} else {
-		return errors.New("product not found")
+		return liberror.ErrorISBNIsNull
 	}
 	return nil
+}
+
+func generateISBN() string {
+
+	min := 1000
+	max := 9999
+
+	first := rand.Intn((max - min + 1) + min)
+	second := rand.Intn((max - min + 1) + min)
+	third := rand.Intn((max - min + 1) + min)
+
+	return fmt.Sprintf("%v-%v-%v", first, second, third)
 }
