@@ -67,6 +67,4 @@ func main() {
 		log.Fatalf("Error: %v", err)
 	}
 
-	// TODO improve resolving authors
-
 }
