@@ -11,6 +11,7 @@ import (
 	"github.com/echocat/golang-kata-1/v1/pkg/reader"
 )
 
+// Librarian
 type Librarian struct {
 	Books     []models.Book
 	Magazines []models.Magazine
@@ -110,8 +111,12 @@ func (m Librarian) PrintAll() {
 // FindBookByAuthor looks up a book based on its author
 func (m *Librarian) FindBookByAuthor(email string) ([]models.Book, error) {
 
-	authors, _ := reader.LoadAuthors("/mnt/d/projects/go-library/golang-kata-1/resources/authors.csv")
-	records, err := loadFile("/mnt/d/projects/go-library/golang-kata-1/resources/books.csv")
+	filepathAuthors := os.Getenv("AUTHORS_FILE")
+	filepathBooks := os.Getenv("BOOKS_FILE")
+
+	authors, _ := reader.LoadAuthors(filepathAuthors)
+
+	records, err := loadFile(filepathBooks)
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
 	}
@@ -155,8 +160,12 @@ func (m *Librarian) FindBookByAuthor(email string) ([]models.Book, error) {
 
 // FindMagazineByAuthor returns all magazines whose author matches the provided author email
 func (m *Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error) {
-	authors, _ := reader.LoadAuthors("/mnt/d/projects/go-library/golang-kata-1/resources/authors.csv")
-	records, err := loadFile("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
+
+	filepathAuthors := os.Getenv("AUTHORS_FILE")
+	filepathMagazines := os.Getenv("MAGAZINES_FILE")
+
+	authors, _ := reader.LoadAuthors(filepathAuthors)
+	records, err := loadFile(filepathMagazines)
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
 	}
@@ -181,7 +190,7 @@ func (m *Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error
 		}
 	}
 
-	records, err = loadFile("/mnt/d/projects/go-library/golang-kata-1/resources/magazines.csv")
+	records, err = loadFile(filepathMagazines)
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
 	}

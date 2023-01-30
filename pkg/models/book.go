@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// Book
 type Book struct {
 	Title       string
 	ISBN        string
@@ -12,6 +13,7 @@ type Book struct {
 	Description string
 }
 
+// NewBook constructor for books
 func NewBook(title, isbn, description string, authors []string) Book {
 	return Book{
 		Title:       title,

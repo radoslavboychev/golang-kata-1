@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// Magazine struct
 type Magazine struct {
 	Title       string
 	ISBN        string
@@ -12,6 +13,7 @@ type Magazine struct {
 	PublishedAt string
 }
 
+// NewMagazine constructor for Magazine types
 func NewMagazine(title, isbn, publishedAt string, authors []string) Magazine {
 	return Magazine{
 		Title:       title,
@@ -21,6 +23,7 @@ func NewMagazine(title, isbn, publishedAt string, authors []string) Magazine {
 	}
 }
 
+// PrintProduct method prints data for a magazine in the console
 func (m Magazine) PrintProduct() error {
 	if m.ISBN != "" {
 		fmt.Printf("Magazine Found!\n")

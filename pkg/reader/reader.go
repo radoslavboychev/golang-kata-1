@@ -13,7 +13,8 @@ import (
 // LoadBooks reads book data from a file
 func LoadBooks(filename string) ([]models.Book, error) {
 
-	// OPEN FILE
+	filepath := os.Getenv("AUTHORS_FILE")
+
 	f, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -45,7 +46,7 @@ func LoadBooks(filename string) ([]models.Book, error) {
 		res = append(res, b)
 	}
 
-	a, err := LoadAuthors("/mnt/d/projects/go-library/golang-kata-1/resources/authors.csv")
+	a, err := LoadAuthors(filepath)
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
 	}
@@ -58,9 +59,11 @@ func LoadBooks(filename string) ([]models.Book, error) {
 	return out, nil
 }
 
-// // LoadMagazines loads magazine data from a file
+// LoadMagazines loads magazine data from a file
 func LoadMagazines(filename string) ([]models.Magazine, error) {
-	// read magazine from file
+
+	filepath := os.Getenv("AUTHORS_FILE")
+
 	f, err := os.Open(filename)
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
@@ -91,7 +94,7 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 		res = append(res, m)
 	}
 
-	a, err := LoadAuthors("/mnt/d/projects/go-library/golang-kata-1/resources/authors.csv")
+	a, err := LoadAuthors(filepath)
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile
 	}
@@ -107,7 +110,6 @@ func LoadMagazines(filename string) ([]models.Magazine, error) {
 
 // ResolveMagAuthors maps authors to their emails for magazines
 func ResolveMagAuthors(authors []models.Author, magazines []models.Magazine) (mag []models.Magazine, err error) {
-
 	var mappedMagazines []models.Magazine
 	for _, mag := range magazines {
 		for _, a := range mag.Authors {
@@ -121,10 +123,8 @@ func ResolveMagAuthors(authors []models.Author, magazines []models.Magazine) (ma
 						mag.Authors = append(mag.Authors, mappedAuthor)
 
 					}
-
 				}
 			}
-
 		}
 		mappedMagazines = append(mappedMagazines, mag)
 	}
@@ -146,10 +146,8 @@ func ResolveBookAuthors(authors []models.Author, books []models.Book) (mag []mod
 						mag.Authors = append(mag.Authors, mappedAuthor)
 
 					}
-
 				}
 			}
-
 		}
 		mappedBooks = append(mappedBooks, mag)
 	}
@@ -158,7 +156,7 @@ func ResolveBookAuthors(authors []models.Author, books []models.Book) (mag []mod
 
 // LoadAuthors reads all authors
 func LoadAuthors(filename string) ([]models.Author, error) {
-	// reads the authors from file
+
 	f, err := os.Open(filename)
 	if err != nil {
 		return nil, liberror.ErrFailedToOpenFile

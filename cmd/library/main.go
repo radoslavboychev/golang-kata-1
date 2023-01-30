@@ -2,30 +2,38 @@ package main
 
 import (
 	"log"
+	"os"
 
-	"github.com/echocat/golang-kata-1/v1/config"
 	"github.com/echocat/golang-kata-1/v1/librarian"
 	"github.com/echocat/golang-kata-1/v1/pkg/reader"
+	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
 
-	// Load configuration
-	conf, err := config.LoadConfig()
+	err := godotenv.Load("../.././config/config.env")
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
+	// ENV
+	magazinesFile := os.Getenv("MAGAZINES_FILE")
+	booksFile := os.Getenv("BOOKS_FILE")
+	authorEmail := os.Getenv("AUTHOR_EMAIL")
+	isbn := os.Getenv("ISBN")
+	findTitle := os.Getenv("FIND_TITLE")
+
 	// Load books from file
-	books, err := reader.LoadBooks(conf.BooksFile)
+	books, err := reader.LoadBooks(magazinesFile)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
 	// Load magazines from file
-	magazines, err := reader.LoadMagazines(conf.MagazinesFile)
+	magazines, err := reader.LoadMagazines(booksFile)
 	if err != nil {
 		log.Println(err)
 		return
@@ -35,32 +43,30 @@ func main() {
 	manager := librarian.NewLibrarian(books, magazines)
 
 	// find by ISBN
-	p, err := manager.FindByISBN(conf.FindByISBN)
+	p, err := manager.FindByISBN(isbn)
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
 	p.PrintProduct()
 
 	// search for a product by title
-	_, err = manager.FindByTitle(conf.FindByTitle)
+	_, err = manager.FindByTitle(findTitle)
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
 
 	// search product by author
-	_, err = manager.FindBookByAuthor(conf.AuthorEmail)
+	_, err = manager.FindBookByAuthor(authorEmail)
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
 
 	// finding magazine by author
-	_, err = manager.FindMagazineByAuthor(conf.AuthorEmail)
+	_, err = manager.FindMagazineByAuthor(authorEmail)
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
 
-	// // TODO improve resolving authors
-	// TODO fix file loading directories
-	// TODO
+	// TODO improve resolving authors
 
 }
