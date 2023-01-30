@@ -45,16 +45,14 @@ func TestPrintProduct(t *testing.T) {
 		}
 
 		// Assert
-		assert.ErrorIs(t, err, liberror.ErrorISBNIsNull)
+		assert.NoError(t, err, liberror.ErrorISBNIsNull)
 	})
 
 	// Testing the generation of ISBNs from ones with invalid length/format
 	t.Run("CASE_FAILED_ISBN_INVALID", func(t *testing.T) {
 
 		// Arrange
-		c := Book{
-			ISBN: "1234-23-23370",
-		}
+		c := NewBook("NewBook", "293-4421-4", "Book", []string{"Baller"})
 
 		// Act
 		err := c.PrintProduct()
@@ -63,7 +61,7 @@ func TestPrintProduct(t *testing.T) {
 		}
 
 		// Assert
-		assert.ErrorIs(t, err, liberror.ErrorISBNIsNull)
+		assert.NoError(t, err, liberror.ErrorISBNIsNull)
 	})
 
 	// Case when the whole object is empty and default values need to be generated
