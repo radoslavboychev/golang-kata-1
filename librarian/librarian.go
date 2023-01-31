@@ -4,11 +4,12 @@ import (
 	"encoding/csv"
 	"log"
 	"os"
+	"sort"
 	"strings"
 
-	liberror "github.com/echocat/golang-kata-1/v1/errors"
-	"github.com/echocat/golang-kata-1/v1/pkg/models"
-	"github.com/echocat/golang-kata-1/v1/pkg/reader"
+	liberror "git.vegaitsourcing.rs/radoslav.boychev/librarian-project/errors"
+	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/models"
+	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/reader"
 )
 
 // Librarian
@@ -234,6 +235,22 @@ func (m Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error)
 		v.PrintProduct()
 	}
 	return out, nil
+}
+
+func (m Librarian) Sort() {
+	p := models.Items{
+		Magazines: m.Magazines,
+		Books:     m.Books,
+	}
+
+	sort.Slice(p.Books, func(i, j int) bool {
+		return p.Books[i].Title < p.Books[j].Title
+	})
+
+	for _, v := range p.Books {
+		v.PrintProduct()
+	}
+
 }
 
 // loadFile read the contents from a file

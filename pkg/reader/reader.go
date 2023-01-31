@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	liberror "github.com/echocat/golang-kata-1/v1/errors"
-	"github.com/echocat/golang-kata-1/v1/pkg/models"
+	liberror "git.vegaitsourcing.rs/radoslav.boychev/librarian-project/errors"
+	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/models"
 )
 
 // LoadBooks reads book data from a file
@@ -174,26 +174,30 @@ func ResolveBookAuthors(authors []models.Author, books []models.Book) (mag []mod
 	}
 
 	if len(books) == 0 {
+<<<<<<< HEAD
 		return nil, liberror.ErrFailedToResolveMagazinesInvalid
+=======
+		return nil, liberror.FailedToResolveBooksInvalid
+>>>>>>> dbf35c6 (console menu, test cases)
 	}
 
 	var mappedBooks []models.Book
-	for _, mag := range books {
-		for _, a := range mag.Authors {
+	for _, book := range books {
+		for _, a := range book.Authors {
 			newAuthors := splitString(a, ",")
-			mag.Authors = []string{}
+			book.Authors = []string{}
 			for _, mappedAuthor := range newAuthors {
 				for _, auth := range authors {
 					if mappedAuthor == auth.Email {
 						mappedAuthor = " " + auth.Firstname + " " + auth.Lastname + " "
 
-						mag.Authors = append(mag.Authors, mappedAuthor)
+						book.Authors = append(book.Authors, mappedAuthor)
 
 					}
 				}
 			}
 		}
-		mappedBooks = append(mappedBooks, mag)
+		mappedBooks = append(mappedBooks, book)
 	}
 
 	if len(mappedBooks) == 0 {

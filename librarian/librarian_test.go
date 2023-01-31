@@ -4,9 +4,9 @@ import (
 	"os"
 	"testing"
 
-	liberror "github.com/echocat/golang-kata-1/v1/errors"
-	"github.com/echocat/golang-kata-1/v1/pkg/models"
-	"github.com/echocat/golang-kata-1/v1/pkg/reader"
+	liberror "git.vegaitsourcing.rs/radoslav.boychev/librarian-project/errors"
+	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/models"
+	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/reader"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )

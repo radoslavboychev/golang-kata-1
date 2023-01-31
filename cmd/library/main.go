@@ -1,16 +1,23 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
 	"log"
 	"os"
 
-	"github.com/echocat/golang-kata-1/v1/librarian"
-	"github.com/echocat/golang-kata-1/v1/pkg/reader"
+	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/librarian"
+	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/reader"
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
+
+	start()
+}
+
+func start() {
 
 	err := godotenv.Load("../.././config/config.env")
 	if err != nil {
@@ -18,12 +25,11 @@ func main() {
 		return
 	}
 
+	printMenu()
+
 	// ENV
 	magazinesFile := os.Getenv("MAGAZINES_FILE")
 	booksFile := os.Getenv("BOOKS_FILE")
-	authorEmail := os.Getenv("AUTHOR_EMAIL")
-	isbn := os.Getenv("ISBN")
-	findTitle := os.Getenv("FIND_TITLE")
 
 	// Load books from file
 	books, err := reader.LoadBooks(magazinesFile)
@@ -42,29 +48,88 @@ func main() {
 	// creates a new products manager (librarian)
 	manager := librarian.NewLibrarian(books, magazines)
 
-	// find by ISBN
-	p, err := manager.FindByISBN(isbn)
-	if err != nil {
-		log.Fatalf("Error: %v", err)
-	}
-	p.PrintProduct()
+Loop:
+	for {
 
-	// search for a product by title
-	_, err = manager.FindByTitle(findTitle)
-	if err != nil {
-		log.Fatalf("Error: %v", err)
-	}
+		reader := bufio.NewReader(os.Stdin)
 
-	// search product by author
-	_, err = manager.FindBookByAuthor(authorEmail)
-	if err != nil {
-		log.Fatalf("Error: %v", err)
-	}
+		char, _, err := reader.ReadRune()
+		if err != nil {
+			return
+		}
 
-	// finding magazine by author
-	_, err = manager.FindMagazineByAuthor(authorEmail)
-	if err != nil {
-		log.Fatalf("Error: %v", err)
-	}
+		scanner := bufio.NewScanner(os.Stdin)
 
+		switch char {
+		case '1':
+			fmt.Print("Insert a valid 14 digit ISBN divided by dashes '-' to search for: ")
+			scanner.Scan()
+			if err != nil {
+				return
+			}
+			p, err := manager.FindByISBN(scanner.Text())
+			if err != nil {
+				log.Fatalf("Error: %v", err)
+			}
+			p.PrintProduct()
+			fmt.Println()
+			printMenu()
+
+		case '2':
+			fmt.Print("Title to search for:  ")
+			scanner.Scan()
+			if err != nil {
+				return
+			}
+			_, err := manager.FindByTitle(scanner.Text())
+			if err != nil {
+				log.Fatalf("Error: %v", err)
+			}
+			fmt.Println()
+			printMenu()
+
+		case '3':
+			fmt.Print("Author email to search a book for: ")
+			scanner.Scan()
+			if err != nil {
+				return
+			}
+			_, err = manager.FindBookByAuthor(scanner.Text())
+			if err != nil {
+				log.Fatalf("Error: %v", err)
+			}
+			fmt.Println()
+			printMenu()
+
+		case '4':
+			fmt.Print("Magazine author email to search for:  ")
+			scanner.Scan()
+			if err != nil {
+				return
+			}
+			_, err = manager.FindMagazineByAuthor(scanner.Text())
+			if err != nil {
+				log.Fatalf("Error: %v", err)
+			}
+			fmt.Println()
+			printMenu()
+
+		case '5':
+			fmt.Println("Exiting program")
+			break Loop
+		default:
+			fmt.Println("Invalid choice. Please try again")
+			fmt.Print("Your choice: ")
+		}
+	}
+}
+
+func printMenu() {
+	fmt.Println("=-=-=-=-= MAIN MENU =-=-=-=-=")
+	fmt.Println("Press '1' to find product by ISBN")
+	fmt.Println("Press '2' to find by title")
+	fmt.Println("Press '3' to find book by author")
+	fmt.Println("Press '4' to find magazine by author")
+	fmt.Println("Press '5' to exit")
+	fmt.Print("Your choice: ")
 }
