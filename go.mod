@@ -1,4 +1,4 @@
-module github.com/echocat/golang-kata-1/v1
+module github.com/radoslavboychev/librarian
 
 go 1.18
 

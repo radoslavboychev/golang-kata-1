@@ -4,7 +4,7 @@ import (
 	"log"
 	"testing"
 
-	liberror "github.com/echocat/golang-kata-1/v1/errors"
+	liberror "github.com/radoslavboychev/librarian/errors"
 	"github.com/stretchr/testify/assert"
 )
 
