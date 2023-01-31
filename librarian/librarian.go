@@ -103,12 +103,6 @@ func (m Librarian) FindByTitle(title string) ([]models.Product, error) {
 	return foundItems, nil
 }
 
-// PrintAll prints info for all products
-func (m Librarian) PrintAll() {
-	m.PrintBooks()
-	m.PrintMagazines()
-}
-
 // FindBookByAuthor looks up a book based on its author
 func (m Librarian) FindBookByAuthor(email string) ([]models.Book, error) {
 
@@ -237,20 +231,44 @@ func (m Librarian) FindMagazineByAuthor(email string) ([]models.Magazine, error)
 	return out, nil
 }
 
-func (m Librarian) Sort() {
+// Sort sorts
+func (m Librarian) Sort() ([]models.Product, error) {
 	p := models.Items{
 		Magazines: m.Magazines,
 		Books:     m.Books,
 	}
 
+	prod := []models.Product{}
+
 	sort.Slice(p.Books, func(i, j int) bool {
 		return p.Books[i].Title < p.Books[j].Title
 	})
 
+	sort.Slice(m.Magazines, func(i, j int) bool {
+		return p.Magazines[i].Title < p.Magazines[j].Title
+	})
+
 	for _, v := range p.Books {
+		prod = append(prod, v)
 		v.PrintProduct()
 	}
 
+	for _, v := range p.Magazines {
+		prod = append(prod, v)
+		v.PrintProduct()
+	}
+
+	if prod == nil {
+		return nil, liberror.ErrFailedToPrint
+	}
+
+	return prod, nil
+}
+
+// PrintAll prints info for all products
+func (m Librarian) PrintAll() {
+	m.PrintBooks()
+	m.PrintMagazines()
 }
 
 // loadFile read the contents from a file

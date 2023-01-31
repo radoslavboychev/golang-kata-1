@@ -39,6 +39,7 @@ func NewMagazine(title, isbn, publishedAt string, authors []string) Magazine {
 // PrintProduct method prints data for a magazine in the console
 func (m Magazine) PrintProduct() error {
 	if m.ISBN != "" {
+		fmt.Println("======")
 		fmt.Printf("Magazine:\n")
 		fmt.Printf("ISBN: %v\n", m.ISBN)
 		fmt.Printf("Title: %v\n", m.Title)

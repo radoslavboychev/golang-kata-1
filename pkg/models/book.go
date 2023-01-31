@@ -56,6 +56,7 @@ func (b Book) PrintProduct() error {
 	return nil
 }
 
+// generateISBN returns a new ISBN-format string of length 14 divided by the dash '-' symbol
 func generateISBN() string {
 
 	min := 1000

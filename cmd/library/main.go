@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	liberror "git.vegaitsourcing.rs/radoslav.boychev/librarian-project/errors"
 	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/librarian"
 	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/reader"
 	"github.com/joho/godotenv"
@@ -14,6 +15,7 @@ import (
 
 func main() {
 
+	// initialize the app
 	start()
 }
 
@@ -24,8 +26,6 @@ func start() {
 		log.Println(err)
 		return
 	}
-
-	printMenu()
 
 	// ENV
 	magazinesFile := os.Getenv("MAGAZINES_FILE")
@@ -48,20 +48,23 @@ func start() {
 	// creates a new products manager (librarian)
 	manager := librarian.NewLibrarian(books, magazines)
 
-Loop:
-	for {
+	// reader := bufio.NewReader(os.Stdin)
+	scanner := bufio.NewScanner(os.Stdin)
 
-		reader := bufio.NewReader(os.Stdin)
+	var choice int
 
-		char, _, err := reader.ReadRune()
+	for choice < 6 {
+
+		// print the menu for reaction
+		printMenu()
+
+		fmt.Scanln(&choice)
 		if err != nil {
 			return
 		}
 
-		scanner := bufio.NewScanner(os.Stdin)
-
-		switch char {
-		case '1':
+		switch choice {
+		case 1:
 			fmt.Print("Insert a valid 14 digit ISBN divided by dashes '-' to search for: ")
 			scanner.Scan()
 			if err != nil {
@@ -69,13 +72,19 @@ Loop:
 			}
 			p, err := manager.FindByISBN(scanner.Text())
 			if err != nil {
-				log.Fatalf("Error: %v", err)
+				if err == liberror.ErrFailedToFindProduct {
+					fmt.Println(err.Error())
+					break
+				} else {
+					log.Fatalf(err.Error())
+					break
+				}
 			}
+
 			p.PrintProduct()
 			fmt.Println()
-			printMenu()
 
-		case '2':
+		case 2:
 			fmt.Print("Title to search for:  ")
 			scanner.Scan()
 			if err != nil {
@@ -83,53 +92,70 @@ Loop:
 			}
 			_, err := manager.FindByTitle(scanner.Text())
 			if err != nil {
-				log.Fatalf("Error: %v", err)
+				if err == liberror.ErrFailedToFindProduct {
+					fmt.Println(err.Error())
+					break
+				}
 			}
 			fmt.Println()
-			printMenu()
 
-		case '3':
+		case 3:
 			fmt.Print("Author email to search a book for: ")
 			scanner.Scan()
 			if err != nil {
-				return
+				fmt.Println(err.Error())
+				break
 			}
 			_, err = manager.FindBookByAuthor(scanner.Text())
 			if err != nil {
-				log.Fatalf("Error: %v", err)
+				fmt.Println(err.Error())
+				break
 			}
 			fmt.Println()
-			printMenu()
 
-		case '4':
+		case 4:
 			fmt.Print("Magazine author email to search for:  ")
 			scanner.Scan()
 			if err != nil {
-				return
+				fmt.Println(err.Error())
+				break
 			}
 			_, err = manager.FindMagazineByAuthor(scanner.Text())
 			if err != nil {
-				log.Fatalf("Error: %v", err)
+				fmt.Println(err.Error())
+				break
 			}
 			fmt.Println()
-			printMenu()
 
-		case '5':
-			fmt.Println("Exiting program")
-			break Loop
+		case 5:
+			fmt.Println("Sorting items...")
+			_, err := manager.Sort()
+			if err != nil {
+				fmt.Println(err.Error())
+				break
+			}
+			fmt.Println()
+
+		case 6:
+			fmt.Println("Exiting program...")
+			os.Exit(0)
+
 		default:
-			fmt.Println("Invalid choice. Please try again")
-			fmt.Print("Your choice: ")
+			fmt.Println("Invalid input. Exiting program...")
+			os.Exit(0)
 		}
+
 	}
 }
 
+// print menu
 func printMenu() {
 	fmt.Println("=-=-=-=-= MAIN MENU =-=-=-=-=")
 	fmt.Println("Press '1' to find product by ISBN")
 	fmt.Println("Press '2' to find by title")
 	fmt.Println("Press '3' to find book by author")
 	fmt.Println("Press '4' to find magazine by author")
-	fmt.Println("Press '5' to exit")
+	fmt.Println("Press '5' to sort items by title")
+	fmt.Println("Press '6' to exit")
 	fmt.Print("Your choice: ")
 }
