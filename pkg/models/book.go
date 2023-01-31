@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	liberror "github.com/echocat/golang-kata-1/v1/errors"
+	liberror "git.vegaitsourcing.rs/radoslav.boychev/librarian-project/errors"
 )
 
 // Book

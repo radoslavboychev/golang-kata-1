@@ -174,11 +174,7 @@ func ResolveBookAuthors(authors []models.Author, books []models.Book) (mag []mod
 	}
 
 	if len(books) == 0 {
-<<<<<<< HEAD
 		return nil, liberror.ErrFailedToResolveMagazinesInvalid
-=======
-		return nil, liberror.FailedToResolveBooksInvalid
->>>>>>> dbf35c6 (console menu, test cases)
 	}
 
 	var mappedBooks []models.Book
