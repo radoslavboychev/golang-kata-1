@@ -7,9 +7,9 @@ import (
 	"sort"
 	"strings"
 
-	liberror "git.vegaitsourcing.rs/radoslav.boychev/librarian-project/errors"
-	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/models"
-	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/reader"
+	liberror "github.com/radoslav.boychev/librarian-projecterrors"
+	"github.com/radoslav.boychev/librarian-projectpkg/models"
+	"github.com/radoslav.boychev/librarian-projectpkg/reader"
 )
 
 // Librarian

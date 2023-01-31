@@ -6,11 +6,10 @@ import (
 	"log"
 	"os"
 
-	liberror "git.vegaitsourcing.rs/radoslav.boychev/librarian-project/errors"
-	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/librarian"
-	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/reader"
 	"github.com/joho/godotenv"
-	_ "github.com/joho/godotenv/autoload"
+	liberror "github.com/radoslav.boychev/librarian-projecterrors"
+	"github.com/radoslav.boychev/librarian-projectlibrarian"
+	"github.com/radoslav.boychev/librarian-projectpkg/reader"
 )
 
 func main() {

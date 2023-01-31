@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	liberror "git.vegaitsourcing.rs/radoslav.boychev/librarian-project/errors"
-	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/models"
+	liberror "github.com/radoslav.boychev/librarian-project/errors"
+	"github.com/radoslav.boychev/librarian-projectpkg/models"
 )
 
 // LoadBooks reads book data from a file

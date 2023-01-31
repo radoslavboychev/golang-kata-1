@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
-	liberror "git.vegaitsourcing.rs/radoslav.boychev/librarian-project/errors"
-	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/models"
 	"github.com/joho/godotenv"
+	liberror "github.com/radoslav.boychev/librarian-projecterrors"
+	"github.com/radoslav.boychev/librarian-projectpkg/models"
 	"github.com/stretchr/testify/assert"
 )
 

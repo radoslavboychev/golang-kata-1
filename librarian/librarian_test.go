@@ -4,10 +4,10 @@ import (
 	"os"
 	"testing"
 
-	liberror "git.vegaitsourcing.rs/radoslav.boychev/librarian-project/errors"
-	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/models"
-	"git.vegaitsourcing.rs/radoslav.boychev/librarian-project/pkg/reader"
 	"github.com/joho/godotenv"
+	liberror "github.com/radoslav.boychev/librarian-projecterrors"
+	"github.com/radoslav.boychev/librarian-projectpkg/models"
+	"github.com/radoslav.boychev/librarian-projectpkg/reader"
 	"github.com/stretchr/testify/assert"
 )
 

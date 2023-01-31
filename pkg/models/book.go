@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	liberror "git.vegaitsourcing.rs/radoslav.boychev/librarian-project/errors"
+	liberror "github.com/radoslav.boychev/librarian-project/errors"
 )
 
 // Book
