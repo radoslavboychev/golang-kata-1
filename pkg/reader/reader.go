@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	liberror "github.com/radoslav.boychev/librarian-project/errors"
-	"github.com/radoslav.boychev/librarian-projectpkg/models"
+	liberror "github.com/echocat/golang-kata-1/v1/errors"
+	"github.com/echocat/golang-kata-1/v1/pkg/models"
 )
 
 // LoadBooks reads book data from a file

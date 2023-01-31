@@ -7,9 +7,9 @@ import (
 	"sort"
 	"strings"
 
-	liberror "github.com/radoslav.boychev/librarian-projecterrors"
-	"github.com/radoslav.boychev/librarian-projectpkg/models"
-	"github.com/radoslav.boychev/librarian-projectpkg/reader"
+	liberror "github.com/echocat/golang-kata-1/v1/errors"
+	"github.com/echocat/golang-kata-1/v1/pkg/models"
+	"github.com/echocat/golang-kata-1/v1/pkg/reader"
 )
 
 // Librarian

@@ -6,7 +6,11 @@ import (
 	"log"
 	"os"
 
+	liberror "github.com/echocat/golang-kata-1/v1/errors"
+	"github.com/echocat/golang-kata-1/v1/librarian"
+	"github.com/echocat/golang-kata-1/v1/pkg/reader"
 	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
 	liberror "github.com/radoslav.boychev/librarian-projecterrors"
 	"github.com/radoslav.boychev/librarian-projectlibrarian"
 	"github.com/radoslav.boychev/librarian-projectpkg/reader"

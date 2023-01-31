@@ -1,4 +1,4 @@
-module git.vegaitsourcing.rs/radoslav.boychev/librarian-project
+module github.com/echocat/golang-kata-1/v1
 
 go 1.18
 
